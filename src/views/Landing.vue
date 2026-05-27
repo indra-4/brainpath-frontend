@@ -3,7 +3,7 @@
     <AppNavbar :items="landingNavItems" />
 
     <section id="home" class="overflow-hidden bg-gradient-to-b from-blue-50/70 via-slate-50 to-white">
-      <div class="mx-auto flex min-h-[640px] max-w-6xl flex-col items-center justify-center px-5 py-14 text-center sm:px-6 lg:min-h-[700px] lg:px-8">
+      <div class="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col items-center justify-center px-5 py-10 text-center sm:px-6 lg:px-8">
         <p class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-bold text-slate-700 shadow-sm">
           <span class="text-lg leading-none text-blue-600">✦</span>
           AI-powered course recommendations
@@ -31,7 +31,7 @@
           </RouterLink>
         </div>
 
-        <div class="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm font-medium text-slate-600 sm:text-base">
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm font-medium text-slate-600 sm:text-base">
           <p
             v-for="benefit in benefits"
             :key="benefit"
@@ -46,16 +46,20 @@
       </div>
     </section>
 
-    <section id="features" class="bg-white py-20">
-      <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-        <div class="mb-10 max-w-2xl">
+    <section id="features" class="scroll-mt-32 bg-white py-20 sm:py-24">
+      <div class="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <div class="mx-auto mb-10 max-w-3xl text-center">
           <p class="text-sm font-black uppercase tracking-wide text-blue-600">Fitur utama</p>
-          <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950">
+          <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
             Rekomendasi belajar yang ringkas, personal, dan mudah dimulai.
           </h2>
+          <p class="mt-4 text-sm font-medium leading-6 text-slate-500 sm:text-base">
+            Brainpath membantu kamu memilih resource eksternal yang relevan tanpa harus bingung
+            membandingkan terlalu banyak sumber belajar.
+          </p>
         </div>
 
-        <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <SummaryCard
             v-for="feature in features"
             :key="feature.title"
@@ -69,8 +73,8 @@
       </div>
     </section>
 
-    <section id="about" class="bg-blue-50 px-5 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+    <section id="about" class="scroll-mt-32 bg-blue-50 px-5 py-24 sm:px-6 lg:px-8">
+      <div class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
         <div>
           <p class="text-sm font-black uppercase tracking-wide text-blue-600">Tentang</p>
           <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">

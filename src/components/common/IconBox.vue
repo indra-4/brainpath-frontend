@@ -35,6 +35,7 @@ const sizeClass = computed(
       sm: 'h-8 w-8',
       md: 'h-10 w-10',
       lg: 'h-12 w-12',
+      xl: 'h-14 w-14',
     })[props.size] ?? 'h-10 w-10',
 )
 
@@ -44,6 +45,7 @@ const iconSizeClass = computed(
       sm: 'h-4 w-4',
       md: 'h-5 w-5',
       lg: 'h-6 w-6',
+      xl: 'h-7 w-7',
     })[props.size] ?? 'h-5 w-5',
 )
 
