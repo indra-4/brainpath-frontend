@@ -1,95 +1,168 @@
 <template>
-  <main
-    class="relative min-h-screen overflow-hidden bg-[#f4f8ff] px-5 py-8 text-slate-950 sm:px-6 lg:py-10"
-  >
-    <div
-      class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[linear-gradient(135deg,rgba(17,153,238,0.14),rgba(245,158,11,0.10),rgba(134,78,233,0.12))]"
-      aria-hidden="true"
-    />
-
-    <OnboardingHeader :current="3" />
-
-    <section
-      class="relative z-10 mx-auto max-w-5xl overflow-hidden rounded-[28px] border border-white/70 bg-white/95 px-5 py-8 shadow-[0_24px_80px_rgba(32,82,149,0.14)] ring-1 ring-slate-200/80 backdrop-blur sm:px-8 lg:px-12 lg:py-11"
-    >
-      <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <span
-            class="mb-4 inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-700"
-          >
-            Langkah 3
-          </span>
-          <h1 class="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-            Apa yang bikin kamu penasaran?
-          </h1>
-          <p class="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-500 sm:text-base">
-            Pilih satu atau lebih minat. Kombinasi pilihanmu akan membentuk rekomendasi kursus yang lebih personal.
-          </p>
-        </div>
-
-        <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm font-bold text-slate-500">
-          Terpilih: <span class="text-[#5d6ff3]">{{ selectedInterests.length }}</span>
-        </div>
-      </div>
-
-      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <button
-          v-for="interest in interests"
-          :key="interest.label"
-          type="button"
-          class="group flex min-h-[142px] flex-col justify-between rounded-2xl border bg-white px-5 py-5 text-left shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_42px_rgba(37,99,235,0.12)]"
-          :class="
-            selectedInterests.includes(interest.label)
-              ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-100'
-              : 'border-slate-200 hover:border-blue-300'
-          "
-          @click="toggleInterest(interest.label)"
-        >
-          <span
-            class="grid h-11 w-11 place-items-center rounded-2xl text-sm font-black transition group-hover:scale-105"
-            :class="interest.accent"
-          >
-            {{ interest.initial }}
-          </span>
-          <span class="mt-5 block text-sm font-black leading-5 text-slate-950">
-            {{ interest.label }}
-          </span>
-        </button>
-      </div>
-
-      <div class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-        <label for="learning-goal" class="mb-2 block text-sm font-black text-slate-950">
-          Tujuan belajar
-        </label>
-        <select
-          id="learning-goal"
-          v-model="learningGoal"
-          class="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-medium text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        >
-          <option v-for="goal in goals" :key="goal" :value="goal">{{ goal }}</option>
-        </select>
-      </div>
-
-      <RouterLink
-        to="/onboarding-recommendation"
-        class="mt-8 flex h-11 w-full items-center justify-center rounded-xl bg-gradient-to-r from-[#1199ee] to-[#864ee9] text-sm font-black text-white shadow-[0_14px_30px_rgba(93,111,243,0.24)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(93,111,243,0.30)]"
-      >
-        Lihat Rekomendasi
+  <main class="min-h-screen bg-slate-50 px-5 py-8 text-slate-950 sm:px-6 lg:py-10">
+    <section class="mx-auto max-w-5xl">
+      <RouterLink to="/" class="mb-8 inline-flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-sm font-black text-white shadow-sm">
+          BP
+        </span>
+        <span class="text-lg font-black tracking-tight text-slate-950">Brainpath</span>
       </RouterLink>
+
+      <StepProgress :current="3" :labels="steps" />
+
+      <BaseCard padding="lg" class="mt-8">
+        <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p class="text-sm font-black uppercase tracking-wide text-blue-600">Langkah 3</p>
+            <h1 class="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+              Cari Tahu Minat Belajarmu
+            </h1>
+            <p class="mt-4 max-w-2xl text-sm font-medium leading-6 text-slate-500 sm:text-base">
+              Jawab beberapa pertanyaan sederhana agar Brainpath dapat memberikan rekomendasi
+              kursus yang lebih sesuai.
+            </p>
+          </div>
+
+          <div class="rounded-2xl bg-blue-50 px-4 py-3 text-sm font-bold text-slate-600">
+            Terjawab: <span class="text-blue-700">{{ answeredCount }}/{{ questions.length }}</span>
+          </div>
+        </div>
+
+        <form class="mt-8 space-y-8" @submit.prevent="goToRecommendation">
+          <div class="space-y-5">
+            <BaseCard
+              v-for="(question, index) in questions"
+              :key="question.id"
+              padding="md"
+              class="bg-slate-50"
+            >
+              <div class="flex flex-col gap-4 lg:flex-row lg:items-start">
+                <div class="flex min-w-0 flex-1 gap-3">
+                  <span class="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-blue-600 text-xs font-black text-white">
+                    {{ index + 1 }}
+                  </span>
+                  <div>
+                    <h2 class="text-base font-black text-slate-950">{{ question.title }}</h2>
+                    <p class="mt-1 text-xs leading-5 text-slate-500">
+                      Pilih jawaban yang paling mendekati aktivitas yang kamu sukai.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="grid gap-3 sm:grid-cols-2 lg:w-[560px]">
+                  <button
+                    v-for="option in question.options"
+                    :key="option.value"
+                    type="button"
+                    class="rounded-2xl border bg-white p-4 text-left text-sm font-bold leading-5 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50"
+                    :class="
+                      answers[question.id] === option.value
+                        ? 'border-blue-500 bg-blue-50 text-blue-700 ring-2 ring-blue-100'
+                        : 'border-slate-200 text-slate-700'
+                    "
+                    @click="answers[question.id] = option.value"
+                  >
+                    <span class="flex items-center gap-3">
+                      <IconBox :icon="option.icon" :color="option.color" size="sm" />
+                      <span>{{ option.label }}</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </BaseCard>
+          </div>
+
+          <div class="grid gap-5 lg:grid-cols-2">
+            <div>
+              <label for="learning-goal" class="mb-2 block text-sm font-black text-slate-950">
+                Tujuan belajar
+              </label>
+              <select
+                id="learning-goal"
+                v-model="learningGoal"
+                class="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+              >
+                <option v-for="goal in goals" :key="goal" :value="goal">{{ goal }}</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="learning-note" class="mb-2 block text-sm font-black text-slate-950">
+                Ceritakan tujuan belajarmu
+                <span class="font-semibold text-slate-400">(opsional)</span>
+              </label>
+              <textarea
+                id="learning-note"
+                v-model="learningNote"
+                rows="4"
+                class="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                placeholder="Contoh: Saya ingin belajar web agar bisa membuat portofolio pribadi."
+              />
+            </div>
+          </div>
+
+          <BaseButton type="submit" full-width size="lg">
+            Lihat Rekomendasi
+          </BaseButton>
+        </form>
+      </BaseCard>
     </section>
   </main>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import OnboardingHeader from '@/components/onboarding/OnboardingHeader.vue'
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import BaseButton from '@/components/common/BaseButton.vue'
+import BaseCard from '@/components/common/BaseCard.vue'
+import IconBox from '@/components/common/IconBox.vue'
+import StepProgress from '@/components/common/StepProgress.vue'
+import { BarChart3, Bot, Monitor, Palette, Puzzle } from 'lucide-vue-next'
 
-const interests = [
-  { label: 'Desain & Visual', initial: 'DV', accent: 'bg-rose-100 text-rose-700' },
-  { label: 'Membuat Website/Aplikasi', initial: 'WA', accent: 'bg-blue-100 text-blue-700' },
-  { label: 'Logika & Problem Solving', initial: 'LP', accent: 'bg-violet-100 text-violet-700' },
-  { label: 'Data & Analisis', initial: 'DA', accent: 'bg-emerald-100 text-emerald-700' },
-  { label: 'AI & Teknologi Baru', initial: 'AI', accent: 'bg-amber-100 text-amber-700' },
+const router = useRouter()
+const steps = ['Pemahaman IT', 'Reframing', 'Minat', 'Rekomendasi']
+
+const questions = [
+  {
+    id: 'project_part',
+    title: 'Saat membuat sebuah proyek digital, bagian mana yang paling menarik untukmu?',
+    options: [
+      { label: 'Membuat tampilan yang menarik', value: 'frontend', icon: Palette, color: 'purple' },
+      { label: 'Mengatur sistem di balik aplikasi', value: 'backend', icon: Puzzle, color: 'blue' },
+      { label: 'Membaca data dan menemukan pola', value: 'data', icon: BarChart3, color: 'blue' },
+      { label: 'Membuat fitur pintar berbasis AI', value: 'ai', icon: Bot, color: 'slate' },
+    ],
+  },
+  {
+    id: 'learning_activity',
+    title: 'Kamu lebih nyaman belajar dengan aktivitas seperti apa?',
+    options: [
+      { label: 'Mendesain halaman atau layout', value: 'frontend', icon: Palette, color: 'purple' },
+      { label: 'Menyusun alur logika', value: 'backend', icon: Puzzle, color: 'blue' },
+      { label: 'Menganalisis angka atau data', value: 'data', icon: BarChart3, color: 'blue' },
+      { label: 'Mencoba eksperimen teknologi baru', value: 'ai', icon: Bot, color: 'slate' },
+    ],
+  },
+  {
+    id: 'curiosity',
+    title: 'Jika melihat sebuah aplikasi, hal apa yang paling membuatmu penasaran?',
+    options: [
+      { label: 'Bagaimana tampilannya dibuat', value: 'frontend', icon: Monitor, color: 'purple' },
+      { label: 'Bagaimana data disimpan dan diproses', value: 'backend', icon: Puzzle, color: 'blue' },
+      { label: 'Bagaimana data pengguna dianalisis', value: 'data', icon: BarChart3, color: 'blue' },
+      { label: 'Bagaimana aplikasi bisa memberi rekomendasi', value: 'ai', icon: Bot, color: 'slate' },
+    ],
+  },
+  {
+    id: 'final_output',
+    title: 'Hasil akhir seperti apa yang ingin kamu buat?',
+    options: [
+      { label: 'Website atau tampilan aplikasi', value: 'frontend', icon: Monitor, color: 'purple' },
+      { label: 'Sistem login, API, atau database', value: 'backend', icon: Puzzle, color: 'blue' },
+      { label: 'Dashboard data atau laporan analitik', value: 'data', icon: BarChart3, color: 'blue' },
+      { label: 'Chatbot atau sistem rekomendasi', value: 'ai', icon: Bot, color: 'slate' },
+    ],
+  },
 ]
 
 const goals = [
@@ -99,15 +172,13 @@ const goals = [
   'Sekadar penasaran',
 ]
 
-const selectedInterests = ref([])
+const answers = ref({})
 const learningGoal = ref(goals[0])
+const learningNote = ref('')
 
-const toggleInterest = (label) => {
-  if (selectedInterests.value.includes(label)) {
-    selectedInterests.value = selectedInterests.value.filter((item) => item !== label)
-    return
-  }
+const answeredCount = computed(() => Object.keys(answers.value).length)
 
-  selectedInterests.value = [...selectedInterests.value, label]
+const goToRecommendation = () => {
+  router.push('/recommendation')
 }
 </script>

@@ -1,63 +1,52 @@
 <template>
-  <main
-    class="relative min-h-screen overflow-hidden bg-[#f4f8ff] px-5 py-8 text-slate-950 sm:px-6 lg:py-10"
-  >
-    <div
-      class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[linear-gradient(135deg,rgba(17,153,238,0.16),rgba(134,78,233,0.14),rgba(20,184,166,0.10))]"
-      aria-hidden="true"
-    />
-
-    <OnboardingHeader :current="1" />
-
-    <section
-      class="relative z-10 mx-auto max-w-5xl overflow-hidden rounded-[28px] border border-white/70 bg-white/95 px-5 py-8 text-center shadow-[0_24px_80px_rgba(32,82,149,0.14)] ring-1 ring-slate-200/80 backdrop-blur sm:px-8 lg:px-12 lg:py-11"
-    >
-      <div
-        class="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent"
-        aria-hidden="true"
-      />
-
-      <span
-        class="mb-4 inline-flex items-center rounded-full bg-violet-100 px-3 py-1 text-xs font-black text-violet-700"
-      >
-        Langkah 1
-      </span>
-      <h1 class="mx-auto mb-4 max-w-3xl text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-        Apakah kamu sudah memahami dunia IT?
-      </h1>
-      <p class="mx-auto mb-9 max-w-2xl text-sm font-medium leading-6 text-slate-500 sm:text-base">
-        Jawabanmu membantu Brainpath memilih jalur kursus yang paling sesuai dengan ritme dan tujuan belajarmu.
-      </p>
-
-      <div class="grid gap-5 md:grid-cols-2">
-        <RouterLink to="/interest-form" class="block">
-          <KnowledgeOptionCard
-            icon="✓"
-            title="Sudah Paham"
-            description="Saya sudah familiar dengan dunia IT dan ingin langsung memilih minat."
-          />
-        </RouterLink>
-
-        <RouterLink to="/reframing" class="block">
-          <KnowledgeOptionCard
-            icon="?"
-            title="Belum Paham"
-            description="Saya butuh pengenalan singkat tentang bidang-bidang IT terlebih dahulu."
-          />
-        </RouterLink>
-      </div>
-
-      <RouterLink
-        to="/dashboard"
-        class="mt-8 inline-flex text-sm font-semibold text-slate-500 transition hover:text-blue-600"
-      >
-        Lewati onboarding →
+  <main class="min-h-screen bg-slate-50 px-5 py-8 text-slate-950 sm:px-6 lg:py-10">
+    <section class="mx-auto max-w-5xl">
+      <RouterLink to="/" class="mb-8 inline-flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-sm font-black text-white shadow-sm">
+          BP
+        </span>
+        <span class="text-lg font-black tracking-tight text-slate-950">Brainpath</span>
       </RouterLink>
+
+      <StepProgress :current="1" :labels="steps" />
+
+      <BaseCard padding="lg" class="mt-8 text-center">
+        <p class="text-sm font-black uppercase tracking-wide text-blue-600">Langkah 1</p>
+        <h1 class="mx-auto mt-3 max-w-3xl text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+          Apakah kamu sudah memahami dunia IT?
+        </h1>
+        <p class="mx-auto mt-4 max-w-2xl text-sm font-medium leading-6 text-slate-500 sm:text-base">
+          Jawaban ini membantu Brainpath menentukan apakah kamu perlu pengenalan bidang IT dulu
+          atau bisa langsung memilih minat belajar.
+        </p>
+
+        <div class="mt-9 grid gap-5 md:grid-cols-2">
+          <RouterLink to="/interest-form" class="block">
+            <KnowledgeOptionCard
+              :icon="CheckCircle"
+              title="Sudah Paham"
+              description="Saya sudah familiar dengan dunia IT dan ingin langsung memilih minat."
+            />
+          </RouterLink>
+
+          <RouterLink to="/reframing" class="block">
+            <KnowledgeOptionCard
+              :icon="HelpCircle"
+              title="Belum Paham"
+              description="Saya ingin melihat gambaran singkat bidang-bidang IT terlebih dahulu."
+            />
+          </RouterLink>
+        </div>
+      </BaseCard>
     </section>
   </main>
 </template>
 
 <script setup>
-import OnboardingHeader from '@/components/onboarding/OnboardingHeader.vue'
+import BaseCard from '@/components/common/BaseCard.vue'
+import StepProgress from '@/components/common/StepProgress.vue'
 import KnowledgeOptionCard from '@/components/onboarding/KnowledgeOptionCard.vue'
+import { CheckCircle, HelpCircle } from 'lucide-vue-next'
+
+const steps = ['Pemahaman IT', 'Reframing', 'Minat', 'Rekomendasi']
 </script>

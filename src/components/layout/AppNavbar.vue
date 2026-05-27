@@ -1,16 +1,68 @@
 <template>
-  <header class="flex items-center justify-between border-b border-slate-200 bg-white px-8 py-4">
-    <RouterLink to="/" class="text-xl font-bold text-slate-900">
-      Brainpath
-    </RouterLink>
-
-    <nav class="hidden items-center gap-6 text-sm text-slate-600 md:flex">
-      <RouterLink to="/" class="hover:text-blue-600">Beranda</RouterLink>
-      <RouterLink to="/dashboard" class="hover:text-blue-600">Dashboard</RouterLink>
-      <RouterLink to="/recommendation" class="hover:text-blue-600">Jalur Belajar</RouterLink>
-      <RouterLink to="/login" class="rounded-lg border border-slate-300 px-4 py-2 hover:bg-slate-50">
-        Login
+  <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-5 lg:px-6">
+      <RouterLink :to="brandTo" class="flex items-center gap-2.5">
+        <span
+          class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 text-xs font-black text-white shadow-sm"
+          aria-hidden="true"
+        >
+          BP
+        </span>
+        <span class="text-base font-black tracking-tight text-slate-950">{{ brand }}</span>
       </RouterLink>
-    </nav>
+
+      <nav class="hidden items-center gap-2 md:flex" :aria-label="navLabel">
+        <RouterLink
+          v-for="item in items"
+          :key="item.label"
+          :to="item.to"
+          class="rounded-xl px-3 py-1.5 text-xs font-bold text-slate-600 transition hover:bg-slate-100 hover:text-blue-700"
+          active-class="bg-blue-50 text-blue-700"
+        >
+          {{ item.label }}
+        </RouterLink>
+      </nav>
+
+      <RouterLink
+        v-if="ctaLabel"
+        :to="ctaTo"
+        class="hidden h-9 items-center rounded-xl bg-blue-600 px-4 text-xs font-black text-white shadow-sm transition hover:bg-blue-700 sm:inline-flex"
+      >
+        {{ ctaLabel }}
+      </RouterLink>
+    </div>
   </header>
 </template>
+
+<script setup>
+defineProps({
+  brand: {
+    type: String,
+    default: 'Brainpath',
+  },
+  brandTo: {
+    type: [String, Object],
+    default: '/',
+  },
+  navLabel: {
+    type: String,
+    default: 'Navigasi utama',
+  },
+  items: {
+    type: Array,
+    default: () => [
+      { label: 'Beranda', to: '/' },
+      { label: 'Dashboard', to: '/dashboard' },
+      { label: 'Rekomendasi', to: '/recommendation' },
+    ],
+  },
+  ctaLabel: {
+    type: String,
+    default: 'Login',
+  },
+  ctaTo: {
+    type: [String, Object],
+    default: '/login',
+  },
+})
+</script>

@@ -1,55 +1,61 @@
 <template>
-  <aside class="hidden min-h-screen w-[253px] shrink-0 border-r border-slate-200 bg-white md:flex md:flex-col">
+  <aside class="sticky top-0 hidden h-screen w-[224px] shrink-0 border-r border-slate-200 bg-white md:flex md:flex-col">
     <RouterLink
-      to="/dashboard"
-      class="flex h-[60px] items-center gap-3 border-b border-slate-200 px-5"
+      :to="brandTo"
+      class="flex h-14 items-center gap-2.5 border-b border-slate-200 px-4"
     >
       <span
-        class="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-violet-600 text-white shadow-sm"
+        class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 text-xs font-black text-white shadow-sm"
         aria-hidden="true"
       >
-        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M9.5 4.75a3.25 3.25 0 0 0-3.21 2.76 3.63 3.63 0 0 0-.54 7.1 3.75 3.75 0 0 0 7.25 1.26V7.75a3 3 0 0 0-3.5-3Z"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M14.5 4.75a3.25 3.25 0 0 1 3.21 2.76 3.63 3.63 0 0 1 .54 7.1A3.75 3.75 0 0 1 11 15.87V7.75a3 3 0 0 1 3.5-3Z"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        BP
       </span>
-      <span class="text-lg font-extrabold tracking-tight text-[#5d6ff3]">Brainpath</span>
+      <span class="text-base font-extrabold tracking-tight text-blue-700">{{ brand }}</span>
     </RouterLink>
 
-    <nav class="flex-1 px-3 pt-7">
+    <nav class="min-h-0 flex-1 overflow-y-auto px-2.5 py-4">
       <RouterLink
-        v-for="item in menu"
+        v-for="item in items"
         :key="item.path"
         :to="item.path"
-        class="mb-2 flex h-10 items-center gap-3 rounded-[11px] px-3 text-sm font-bold transition"
+        class="mb-1.5 flex h-9 items-center gap-2.5 rounded-[11px] px-2.5 text-xs font-bold transition"
         :class="
           isActive(item)
-            ? 'bg-gradient-to-r from-[#1d8dea] to-[#804fe4] text-white shadow-sm'
+            ? 'bg-blue-600 text-white shadow-sm'
             : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
         "
       >
-        <component :is="icons[item.icon]" class="h-[17px] w-[17px] shrink-0" />
+        <component :is="icons[item.icon]" class="h-4 w-4 shrink-0" />
         <span>{{ item.label }}</span>
       </RouterLink>
     </nav>
 
-    <div class="border-t border-slate-200 px-3 py-4">
-      <div class="rounded-[18px] bg-[#f1ecff] px-4 py-4">
-        <p class="text-xs font-extrabold text-[#4c377f]">Tanya AI</p>
-        <p class="mt-2 text-xs leading-4 text-slate-500">
-          Asisten belajar siap membantu di halaman materi.
+    <div class="shrink-0 border-t border-slate-200 px-2.5 py-2.5">
+      <RouterLink
+        v-if="canAccessAdmin"
+        to="/admin/resources"
+        class="mb-2 flex h-9 items-center justify-center gap-2 rounded-xl border border-blue-100 bg-white text-xs font-black text-blue-700 shadow-sm transition hover:bg-blue-50"
+      >
+        <component :is="icons.admin" class="h-4 w-4" />
+        Admin Resource
+      </RouterLink>
+
+      <button
+        type="button"
+        class="mb-2 flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-xs font-black text-slate-600 shadow-sm transition hover:bg-slate-50 hover:text-slate-950"
+        @click="handleLogout"
+      >
+        <component :is="icons.logout" class="h-4 w-4" />
+        Logout
+      </button>
+
+      <div v-if="helperTitle || helperText" class="rounded-2xl bg-blue-50 px-3 py-2.5">
+        <div class="flex items-center gap-2">
+          <component :is="icons.chat" class="h-4 w-4 text-blue-700" />
+          <p class="text-xs font-extrabold text-blue-700">{{ helperTitle }}</p>
+        </div>
+        <p class="mt-1 text-[11px] leading-4 text-slate-500">
+          {{ helperText }}
         </p>
       </div>
     </div>
@@ -58,17 +64,46 @@
 
 <script setup>
 import { h } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { getCurrentUser, logoutUser } from '@/lib/auth'
 
 const route = useRoute()
+const router = useRouter()
+const currentUser = getCurrentUser()
+const canAccessAdmin = currentUser?.role === 'admin'
 
-const menu = [
-  { label: 'Dashboard', path: '/dashboard', icon: 'dashboard', match: ['/dashboard'] },
-  { label: 'Courses', path: '/courses/1', icon: 'courses', match: ['/courses', '/learn'] },
-  { label: 'Recommendation', path: '/recommendation', icon: 'sparkle', match: ['/recommendation'] },
-  { label: 'Progress', path: '/dashboard', icon: 'progress', match: ['/progress'] },
-  { label: 'Profile', path: '/dashboard', icon: 'profile', match: ['/profile'] },
-]
+const handleLogout = () => {
+  logoutUser()
+  router.push('/')
+}
+
+defineProps({
+  brand: {
+    type: String,
+    default: 'Brainpath',
+  },
+  brandTo: {
+    type: [String, Object],
+    default: '/dashboard',
+  },
+  items: {
+    type: Array,
+    default: () => [
+      { label: 'Dashboard', path: '/dashboard', icon: 'dashboard', match: ['/dashboard'] },
+      { label: 'Recommendation', path: '/recommendation', icon: 'sparkle', match: ['/recommendation'] },
+      { label: 'Riwayat', path: '/history', icon: 'progress', match: ['/history'] },
+      { label: 'Profile', path: '/profile', icon: 'profile', match: ['/profile'] },
+    ],
+  },
+  helperTitle: {
+    type: String,
+    default: 'Tanya AI',
+  },
+  helperText: {
+    type: String,
+    default: 'Asisten belajar siap membantu memilih resource yang cocok.',
+  },
+})
 
 const isActive = (item) => item.match.some((path) => route.path.startsWith(path))
 
@@ -116,6 +151,22 @@ const icons = {
   profile: createIcon([
     { tag: 'circle', cx: 12, cy: 8, r: 3.25 },
     { d: 'M6.5 19a5.5 5.5 0 0 1 11 0' },
+  ]),
+  admin: createIcon([
+    { tag: 'rect', x: 4, y: 4, width: 16, height: 16, rx: 3 },
+    { d: 'M8 9h8' },
+    { d: 'M8 13h5' },
+    { d: 'M8 17h8' },
+  ]),
+  chat: createIcon([
+    { d: 'M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v5A3.5 3.5 0 0 1 15.5 15H11l-4 4v-4.2A3.5 3.5 0 0 1 5 11.5z' },
+    { d: 'M9 8h6' },
+    { d: 'M9 11h4' },
+  ]),
+  logout: createIcon([
+    { d: 'M10 17l5-5-5-5' },
+    { d: 'M15 12H3' },
+    { d: 'M14 4h4a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-4' },
   ]),
 }
 </script>

@@ -22,7 +22,7 @@
           />
         </svg>
       </span>
-      <span class="text-base font-extrabold tracking-tight text-[#5d6ff3]">Brainpath</span>
+      <span class="text-base font-extrabold tracking-tight text-blue-700">Brainpath</span>
     </RouterLink>
 
     <StepProgress :current="current" />
