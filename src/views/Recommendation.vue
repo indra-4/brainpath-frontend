@@ -1,5 +1,5 @@
 <template>
-  <main class="flex min-h-screen bg-slate-50 text-slate-950">
+  <main class="flex flex-col md:flex-row min-h-screen bg-slate-50 text-slate-950">
     <AppSidebar />
 
     <section class="flex-1 px-5 py-6 md:px-8">
@@ -41,18 +41,29 @@
         </p>
       </div>
 
-      <div v-if="recommendationStore.loading" class="mb-8 flex justify-center py-10">
-        <p class="text-slate-500 font-medium">Memuat rekomendasi...</p>
+      <div v-if="recommendationStore.loading" class="grid gap-4 xl:grid-cols-2">
+        <RecommendationSkeleton v-for="n in 4" :key="n" />
       </div>
       <div v-else-if="recommendationStore.error" class="mb-8 flex justify-center py-10 text-red-500 font-medium">
         {{ recommendationStore.error }}
       </div>
-      <div v-else class="grid gap-4 xl:grid-cols-2">
-        <RecommendationCard
-          v-for="resource in sortedResources"
-          :key="resource.id"
-          :resource="resource"
-        />
+      <div v-else>
+        <div v-if="sortedResources.length === 0">
+          <EmptyState
+            title="Belum Ada Rekomendasi"
+            description="Kamu belum mengatur minat atau mengisi form onboarding. Yuk, mulai isi minat belajarmu sekarang!"
+            :icon="Sparkles"
+            cta-text="Mulai Onboarding"
+            cta-to="/onboarding"
+          />
+        </div>
+        <div v-else class="grid gap-4 xl:grid-cols-2">
+          <RecommendationCard
+            v-for="resource in sortedResources"
+            :key="resource.id"
+            :resource="resource"
+          />
+        </div>
       </div>
     </section>
   </main>
@@ -63,6 +74,8 @@ import { computed, ref, onMounted } from 'vue'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import RecommendationCard from '@/components/recommendation/RecommendationCard.vue'
+import RecommendationSkeleton from '@/components/recommendation/RecommendationSkeleton.vue'
+import EmptyState from '@/components/common/EmptyState.vue'
 import RecommendationFilter from '@/components/recommendation/RecommendationFilter.vue'
 import { useRecommendationStore } from '@/stores/recommendationStore'
 import { Sparkles } from 'lucide-vue-next'

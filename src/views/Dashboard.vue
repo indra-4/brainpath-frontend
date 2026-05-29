@@ -1,5 +1,5 @@
 <template>
-  <main class="flex min-h-screen bg-slate-50 text-slate-950">
+  <main class="flex flex-col md:flex-row min-h-screen bg-slate-50 text-slate-950">
     <AppSidebar />
 
     <section class="flex-1 px-5 py-5 md:px-6">

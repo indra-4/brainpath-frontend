@@ -1,8 +1,8 @@
 <template>
-  <main class="flex min-h-screen bg-slate-50 text-slate-950">
+  <main class="flex flex-col md:flex-row min-h-screen bg-slate-50 text-slate-950">
     <AppSidebar />
 
-    <section class="flex flex-1 flex-col px-5 py-5 md:px-6 h-screen">
+    <section class="flex flex-1 flex-col px-5 py-5 md:px-6 h-[calc(100vh-3.5rem)] md:h-screen">
       <div class="mx-auto flex w-full max-w-4xl flex-col h-full">
         <!-- Header -->
         <div class="mb-5 shrink-0">
@@ -55,11 +55,17 @@
             </div>
 
             <!-- Loading indicator -->
-            <div v-if="chatbotStore.isLoading" class="flex justify-start">
-              <div class="bg-slate-100 text-slate-500 rounded-2xl rounded-bl-none px-5 py-4 text-sm flex gap-1">
-                <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
-                <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
-                <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
+            <div v-if="chatbotStore.isLoading" class="flex justify-start items-end gap-2.5">
+              <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-blue-100 text-blue-700 text-xs font-black shadow-sm">
+                AI
+              </span>
+              <div class="bg-slate-100 text-slate-600 rounded-2xl rounded-bl-none px-4 py-3 text-sm flex items-center gap-2 border border-slate-200/50">
+                <div class="flex gap-1 items-center">
+                  <span class="w-1.5 h-1.5 bg-blue-600 rounded-full animate-bounce"></span>
+                  <span class="w-1.5 h-1.5 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.15s"></span>
+                  <span class="w-1.5 h-1.5 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+                </div>
+                <span class="text-xs font-bold text-slate-400 italic">BrainPath AI sedang merespon...</span>
               </div>
             </div>
           </div>

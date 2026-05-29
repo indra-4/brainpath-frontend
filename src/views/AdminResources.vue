@@ -91,11 +91,9 @@
           <div>
             <label class="mb-2 block text-sm font-medium text-slate-800" for="category">Category</label>
             <select id="category" v-model="formData.category" :class="inputClass">
-              <option>Frontend</option>
-              <option>Backend</option>
-              <option>Data</option>
-              <option>AI</option>
-              <option>General IT</option>
+              <option value="web-development">Web Development</option>
+              <option value="data-science">Data Science</option>
+              <option value="cybersecurity">Cybersecurity</option>
             </select>
           </div>
 
@@ -144,6 +142,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import AdminResourceTable from '@/components/admin/AdminResourceTable.vue'
 import AdminTopNavbar from '@/components/admin/AdminTopNavbar.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
@@ -151,7 +150,10 @@ import BaseCard from '@/components/common/BaseCard.vue'
 import { useResourceStore } from '@/stores/resourceStore'
 import { BarChart3, Layers, MousePointerClick } from 'lucide-vue-next'
 
+import Swal from 'sweetalert2'
+
 const resourceStore = useResourceStore()
+const route = useRoute()
 
 const showForm = ref(false)
 const isEditing = ref(false)
@@ -244,26 +246,109 @@ const handleSubmit = async () => {
   try {
     if (isEditing.value && formData.value.id) {
       await resourceStore.updateResource(formData.value.id, submissionData)
+      Swal.fire({
+        title: 'Berhasil!',
+        text: 'Resource berhasil diperbarui.',
+        icon: 'success',
+        confirmButtonColor: '#3b82f6',
+        customClass: {
+          popup: 'rounded-3xl font-sans',
+          confirmButton: 'rounded-xl px-5 py-2.5 font-black text-sm'
+        }
+      })
     } else {
       await resourceStore.addResource(submissionData)
+      Swal.fire({
+        title: 'Berhasil!',
+        text: 'Resource baru berhasil ditambahkan.',
+        icon: 'success',
+        confirmButtonColor: '#3b82f6',
+        customClass: {
+          popup: 'rounded-3xl font-sans',
+          confirmButton: 'rounded-xl px-5 py-2.5 font-black text-sm'
+        }
+      })
     }
     showForm.value = false
   } catch (error) {
-    alert('Gagal menyimpan data: ' + error.message)
+    let errorMsg = error.message
+    if (error.response && error.response.data && error.response.data.data) {
+      const validationErrors = error.response.data.data
+      if (typeof validationErrors === 'object') {
+        errorMsg = Object.entries(validationErrors)
+          .map(([field, msgs]) => `<strong>${field}</strong>: ${msgs.join(', ')}`)
+          .join('<br>')
+      }
+    }
+
+    Swal.fire({
+      title: 'Gagal!',
+      html: 'Gagal menyimpan data:<br><br>' + errorMsg,
+      icon: 'error',
+      confirmButtonColor: '#3b82f6',
+      customClass: {
+        popup: 'rounded-3xl font-sans',
+        confirmButton: 'rounded-xl px-5 py-2.5 font-black text-sm'
+      }
+    })
   }
 }
 
 const handleDelete = async (id) => {
-  if (confirm('Apakah Anda yakin ingin menghapus resource ini secara permanen dari database?')) {
+  const result = await Swal.fire({
+    title: 'Konfirmasi Hapus',
+    text: 'Apakah Anda yakin ingin menghapus resource ini secara permanen dari database?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#64748b',
+    confirmButtonText: 'Ya, Hapus!',
+    cancelButtonText: 'Batal',
+    customClass: {
+      popup: 'rounded-3xl font-sans',
+      confirmButton: 'rounded-xl px-5 py-2.5 font-black text-sm',
+      cancelButton: 'rounded-xl px-5 py-2.5 font-black text-sm'
+    }
+  })
+
+  if (result.isConfirmed) {
     try {
       await resourceStore.deleteResource(id)
+      Swal.fire({
+        title: 'Terhapus!',
+        text: 'Resource berhasil dihapus secara permanen.',
+        icon: 'success',
+        confirmButtonColor: '#3b82f6',
+        customClass: {
+          popup: 'rounded-3xl font-sans',
+          confirmButton: 'rounded-xl px-5 py-2.5 font-black text-sm'
+        }
+      })
     } catch (error) {
-      alert('Gagal menghapus data: ' + error.message)
+      Swal.fire({
+        title: 'Gagal!',
+        text: 'Gagal menghapus data: ' + error.message,
+        icon: 'error',
+        confirmButtonColor: '#3b82f6',
+        customClass: {
+          popup: 'rounded-3xl font-sans',
+          confirmButton: 'rounded-xl px-5 py-2.5 font-black text-sm'
+        }
+      })
     }
   }
 }
 
-onMounted(() => {
-  resourceStore.fetchResources()
+onMounted(async () => {
+  await resourceStore.fetchResources()
+  
+  // Jika dirujuk dari klik tombol 'Edit Link' di notifikasi lonceng
+  const editId = route.query.edit
+  if (editId) {
+    const resourceToEdit = resourceStore.resources.find(r => String(r.id) === String(editId))
+    if (resourceToEdit) {
+      openForm(resourceToEdit)
+    }
+  }
 })
 </script>

@@ -8,4 +8,20 @@
 
 html {
   scroll-padding-top: 6rem;
+  scroll-behavior: smooth;
+}
+
+/* Global Premium Smooth Easing for Interactive Elements */
+a, button, select, input, textarea {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Smooth micro-interaction utility for premium scale effects */
+.hover-premium {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+.hover-premium:hover {
+  transform: translateY(-2px) scale(1.015);
 }

@@ -43,6 +43,25 @@ api.interceptors.response.use(
       }
     }
     
+    // Graceful error handling for 500 server errors, gateway timeouts, or network failures
+    const status = error.response ? error.response.status : null;
+    
+    if (status !== 401 && status !== 422) {
+      import('sweetalert2').then(({ default: Swal }) => {
+        Swal.fire({
+          title: '<span class="font-black text-slate-900">Koneksi Terganggu</span>',
+          html: '<span class="text-sm font-semibold text-slate-500 leading-relaxed">Ups, Asisten AI sedang beristirahat atau server sedang sibuk. Silakan periksa koneksi internet atau coba beberapa saat lagi.</span>',
+          icon: 'warning',
+          confirmButtonColor: '#2563eb',
+          confirmButtonText: 'Mengerti',
+          customClass: {
+            popup: 'rounded-3xl border border-slate-200 p-6',
+            confirmButton: 'rounded-xl px-5 py-2.5 font-bold text-sm shadow-md bg-blue-600 hover:bg-blue-700 text-white'
+          }
+        });
+      });
+    }
+    
     return Promise.reject(error);
   }
 );

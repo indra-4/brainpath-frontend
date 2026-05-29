@@ -1,4 +1,159 @@
 <template>
+  <!-- Mobile Header (Sticky at top of mobile viewport) -->
+  <header class="sticky top-0 z-40 flex h-14 w-full shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 md:hidden">
+    <RouterLink
+      :to="brandTo"
+      class="flex items-center gap-2"
+    >
+      <span class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 text-xs font-black text-white shadow-sm">
+        BP
+      </span>
+      <span class="text-sm font-extrabold tracking-tight text-blue-700">{{ brand }}</span>
+    </RouterLink>
+
+    <button
+      type="button"
+      class="grid h-9 w-9 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 focus:outline-none"
+      @click="isOpen = true"
+      aria-label="Buka menu navigasi"
+    >
+      <Menu class="h-5 w-5" />
+    </button>
+  </header>
+
+  <!-- Mobile Navigation Drawer Teleported to Body to Escape Parent CSS Stacking Contexts -->
+  <Teleport to="body">
+    <!-- Mobile Drawer Backdrop Overlay -->
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="isOpen"
+        class="fixed inset-0 z-[100] bg-slate-950/50 backdrop-blur-sm md:hidden"
+        @click="isOpen = false"
+      />
+    </Transition>
+
+    <!-- Mobile Sidebar Drawer Container (Slides from the RIGHT) -->
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="translate-x-full"
+      enter-to-class="translate-x-0"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="translate-x-0"
+      leave-to-class="translate-x-full"
+    >
+      <aside
+        v-if="isOpen"
+        class="fixed inset-y-0 right-0 z-[110] flex h-full w-[270px] max-w-xs flex-col border-l border-slate-200 bg-white p-6 shadow-2xl md:hidden"
+      >
+        <!-- Drawer Brand Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+          <RouterLink
+            to="/dashboard"
+            class="flex items-center gap-2.5"
+            @click="isOpen = false"
+          >
+            <span class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 text-xs font-black text-white shadow-sm">
+              BP
+            </span>
+            <span class="text-base font-extrabold tracking-tight text-blue-700">{{ brand }}</span>
+          </RouterLink>
+          <button
+            type="button"
+            class="grid h-8 w-8 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition"
+            @click="isOpen = false"
+            aria-label="Tutup menu navigasi"
+          >
+            <X class="h-4.5 w-4.5" />
+          </button>
+        </div>
+
+        <!-- Drawer Navigation Links -->
+        <nav class="min-h-0 flex-1 overflow-y-auto px-1 py-2">
+          <RouterLink
+            v-for="item in items"
+            :key="item.path"
+            :to="item.path"
+            class="mb-2 flex h-10 items-center justify-between rounded-xl px-4 text-xs font-bold transition-all"
+            :class="
+              isActive(item)
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+            "
+            @click="isOpen = false"
+          >
+            <div class="flex items-center gap-3">
+              <component :is="icons[item.icon]" class="h-4.5 w-4.5 shrink-0" />
+              <span>{{ item.label }}</span>
+            </div>
+            <ChevronRight class="h-3.5 w-3.5 opacity-50" v-if="!isActive(item)" />
+          </RouterLink>
+        </nav>
+
+        <!-- Drawer Footer Actions -->
+        <div class="shrink-0 border-t border-slate-100 pt-4 space-y-3">
+          <RouterLink
+            v-if="canAccessAdmin"
+            to="/admin/resources"
+            class="flex h-10 items-center justify-center gap-2 rounded-xl border border-blue-100 bg-white text-xs font-black text-blue-700 shadow-sm transition hover:bg-blue-50"
+            @click="isOpen = false"
+          >
+            <component :is="icons.admin" class="h-4.5 w-4.5" />
+            Admin Resource
+          </RouterLink>
+
+          <!-- User Profile Info in Mobile Drawer -->
+          <div class="flex items-center gap-3 rounded-2xl bg-slate-50 p-3 border border-slate-100">
+            <span class="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-blue-600 text-xs font-black text-white shadow-sm ring-2 ring-blue-50">
+              <img 
+                v-if="authStore.user?.avatar" 
+                :src="authStore.user.avatar" 
+                alt="Foto Profil"
+                class="h-full w-full object-cover" 
+              />
+              <span v-else>{{ authStore.user?.name ? authStore.user.name[0].toUpperCase() : 'U' }}</span>
+            </span>
+            <div class="min-w-0">
+              <p class="truncate text-xs font-black text-slate-950">{{ authStore.user?.name || 'User Brainpath' }}</p>
+              <p class="truncate text-[10px] font-bold text-slate-400 mt-0.5">{{ authStore.user?.email || 'user@brainpath.dev' }}</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-xs font-black text-slate-600 shadow-sm transition hover:bg-slate-50 hover:text-slate-950"
+            @click="handleLogoutMobile"
+          >
+            <component :is="icons.logout" class="h-4.5 w-4.5" />
+            Logout
+          </button>
+
+          <RouterLink 
+            v-if="helperTitle || helperText" 
+            to="/chatbot"
+            class="block rounded-2xl bg-blue-50 px-4 py-3 transition hover:bg-blue-100"
+            @click="isOpen = false"
+          >
+            <div class="flex items-center gap-2">
+              <component :is="icons.chat" class="h-4.5 w-4.5 text-blue-700" />
+              <p class="text-xs font-extrabold text-blue-700">{{ helperTitle }}</p>
+            </div>
+            <p class="mt-1 text-[11px] leading-4 text-slate-500 font-medium">
+              {{ helperText }}
+            </p>
+          </RouterLink>
+        </div>
+      </aside>
+    </Transition>
+  </Teleport>
+
+  <!-- Desktop Aside Sidebar (Hidden on mobile) -->
   <aside class="sticky top-0 hidden h-screen w-[224px] shrink-0 border-r border-slate-200 bg-white md:flex md:flex-col">
     <RouterLink
       :to="brandTo"
@@ -67,9 +222,10 @@
 </template>
 
 <script setup>
-import { h, computed } from 'vue'
+import { h, computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
+import { Menu, X, ChevronRight } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -81,6 +237,17 @@ const handleLogout = async () => {
   await authStore.logout()
   router.push('/')
 }
+
+const handleLogoutMobile = async () => {
+  isOpen.value = false
+  await handleLogout()
+}
+
+const isOpen = ref(false)
+
+watch(() => route.path, () => {
+  isOpen.value = false
+})
 
 defineProps({
   brand: {

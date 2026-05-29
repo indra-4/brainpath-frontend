@@ -111,7 +111,7 @@ const handleRegister = async () => {
   }
   
   try {
-    const user = await authStore.register(name.value, email.value, password.value, passwordConfirmation.value)
+    await authStore.register(name.value, email.value, password.value, passwordConfirmation.value)
     // Setelah register, arahkan ke onboarding untuk pengguna baru
     router.push('/onboarding')
   } catch (error) {

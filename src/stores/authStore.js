@@ -102,6 +102,16 @@ export const useAuthStore = defineStore('auth', {
       } catch (err) {
         console.error('Fetch user error:', err);
       }
+    },
+    
+    updateUserProfile(name, avatar) {
+      if (this.user) {
+        this.user.name = name;
+        if (avatar !== undefined) {
+          this.user.avatar = avatar; // Base64 kustom
+        }
+        localStorage.setItem('user', JSON.stringify(this.user));
+      }
     }
   }
 });
