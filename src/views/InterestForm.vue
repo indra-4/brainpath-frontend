@@ -2,9 +2,7 @@
   <main class="min-h-screen bg-slate-50 px-5 py-8 text-slate-950 sm:px-6 lg:py-10">
     <section class="mx-auto max-w-5xl">
       <RouterLink to="/" class="mb-8 inline-flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-sm font-black text-white shadow-sm">
-          BP
-        </span>
+        <img src="/logo.jpg" alt="Brainpath Logo" class="h-10 w-10 rounded-2xl object-cover shadow-sm" />
         <span class="text-lg font-black tracking-tight text-slate-950">Brainpath</span>
       </RouterLink>
 

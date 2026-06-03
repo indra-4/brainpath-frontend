@@ -5,9 +5,7 @@
       :to="brandTo"
       class="flex items-center gap-2"
     >
-      <span class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 text-xs font-black text-white shadow-sm">
-        BP
-      </span>
+      <img src="/logo.jpg" alt="Brainpath Logo" class="h-8 w-8 rounded-xl object-cover shadow-sm" />
       <span class="text-sm font-extrabold tracking-tight text-blue-700">{{ brand }}</span>
     </RouterLink>
 
@@ -59,9 +57,7 @@
             class="flex items-center gap-2.5"
             @click="isOpen = false"
           >
-            <span class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 text-xs font-black text-white shadow-sm">
-              BP
-            </span>
+            <img src="/logo.jpg" alt="Brainpath Logo" class="h-8 w-8 rounded-xl object-cover shadow-sm" />
             <span class="text-base font-extrabold tracking-tight text-blue-700">{{ brand }}</span>
           </RouterLink>
           <button
@@ -159,12 +155,7 @@
       :to="brandTo"
       class="flex h-14 items-center gap-2.5 border-b border-slate-200 px-4"
     >
-      <span
-        class="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 text-xs font-black text-white shadow-sm"
-        aria-hidden="true"
-      >
-        BP
-      </span>
+      <img src="/logo.jpg" alt="Brainpath Logo" class="h-8 w-8 rounded-xl object-cover shadow-sm" />
       <span class="text-base font-extrabold tracking-tight text-blue-700">{{ brand }}</span>
     </RouterLink>
 
