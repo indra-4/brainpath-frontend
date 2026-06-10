@@ -124,7 +124,7 @@ import { useOnboardingStore } from '@/stores/onboardingStore'
 
 const router = useRouter()
 const onboardingStore = useOnboardingStore()
-const steps = ['Pemahaman IT', 'Reframing', 'Minat', 'Rekomendasi']
+const steps = ['Pemahaman IT', 'Reframing', 'Minat']
 
 const questions = [
   {
