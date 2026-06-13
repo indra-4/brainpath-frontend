@@ -50,7 +50,14 @@
                     ? 'bg-red-50 text-red-700 border border-red-200 rounded-bl-none'
                     : 'bg-slate-100 text-slate-900 rounded-bl-none'
               ]">
-                <div v-html="formatMessage(msg.content)"></div>
+               <div
+  v-if="msg.role === 'assistant'"
+  class="markdown-content"
+  v-html="formatMessage(msg.content)"></div>
+
+<p v-else>
+  {{ msg.content }}
+</p>
               </div>
             </div>
 
@@ -97,6 +104,8 @@
 
 <script setup>
 import { ref, onMounted, nextTick, watch } from 'vue'
+import MarkdownIt from 'markdown-it'
+import DOMPurify from 'dompurify'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import { useChatbotStore } from '@/stores/chatbotStore'
 import { useResourceStore } from '@/stores/resourceStore'
@@ -134,10 +143,90 @@ watch(() => chatbotStore.messages.length, async () => {
 })
 
 // Simple formatter to parse bold and line breaks for Gemini's markdown
+const md = new MarkdownIt({
+  html: false,
+  linkify: true,
+  breaks: true,
+})
+
 const formatMessage = (text) => {
   if (!text) return ''
-  let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-  html = html.replace(/\n/g, '<br/>')
-  return html
+  return DOMPurify.sanitize(md.render(text))
 }
 </script>
+
+<style scoped>
+.markdown-content :deep(h1),
+.markdown-content :deep(h2),
+.markdown-content :deep(h3) {
+  font-weight: 700;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  color: #0f172a;
+}
+
+.markdown-content :deep(h1) {
+  font-size: 1.25rem;
+}
+
+.markdown-content :deep(h2) {
+  font-size: 1.1rem;
+}
+
+.markdown-content :deep(h3) {
+  font-size: 1rem;
+}
+
+.markdown-content :deep(p) {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content :deep(ul),
+.markdown-content :deep(ol) {
+  padding-left: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content :deep(ul) {
+  list-style-type: disc;
+}
+
+.markdown-content :deep(ol) {
+  list-style-type: decimal;
+}
+
+.markdown-content :deep(li) {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content :deep(strong) {
+  font-weight: 700;
+}
+
+.markdown-content :deep(code) {
+  border-radius: 0.35rem;
+  background-color: #e2e8f0;
+  padding: 0.125rem 0.3rem;
+  font-size: 0.85em;
+}
+
+.markdown-content :deep(pre) {
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  background-color: #0f172a;
+  color: white;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content :deep(pre code) {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.markdown-content :deep(a) {
+  color: #2563eb;
+  text-decoration: underline;
+}
+</style>

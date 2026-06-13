@@ -165,7 +165,10 @@ const router = createRouter({
 router.beforeEach((to) => {
   const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+  const isAuthenticated = authStore.isAuthenticated
+  const userRole = authStore.user?.role
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
     return {
       path: '/login',
       query: {
@@ -173,14 +176,13 @@ router.beforeEach((to) => {
       },
     }
   }
-  
-  // Jika sudah login dan mencoba ke halaman public (login/register/landing)
-  if (authStore.isAuthenticated && (to.path === '/login' || to.path === '/register' || to.path === '/')) {
-    return authStore.user?.role === 'admin' ? '/admin/resources' : '/dashboard'
+
+  if (to.meta.guestOnly && isAuthenticated) {
+    return userRole === 'admin' ? '/admin/resources' : '/dashboard'
   }
 
-  if (to.meta.role && authStore.user?.role !== to.meta.role) {
-    return authStore.user?.role === 'admin' ? '/admin/resources' : '/dashboard'
+  if (to.meta.role && userRole && userRole !== to.meta.role) {
+    return userRole === 'admin' ? '/admin/resources' : '/dashboard'
   }
 
   return true
