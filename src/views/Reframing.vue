@@ -1,8 +1,8 @@
 <template>
   <main class="min-h-screen bg-slate-50 px-5 py-8 text-slate-950 sm:px-6 lg:py-10">
-    <section class="mx-auto max-w-6xl">
+    <section class="mx-auto max-w-5xl">
       <RouterLink to="/" class="mb-8 inline-flex items-center gap-3">
-        <img src="/logo.jpg" alt="Brainpath Logo" class="h-10 w-10 rounded-2xl object-cover shadow-sm" />
+        <img src="/Logo_BrainPath.png" alt="Brainpath Logo" class="h-10 w-10 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 p-1.5 object-contain shadow-sm" />
         <span class="text-lg font-black tracking-tight text-slate-950">Brainpath</span>
       </RouterLink>
 
@@ -95,7 +95,7 @@ import IconBox from '@/components/common/IconBox.vue'
 import StepProgress from '@/components/common/StepProgress.vue'
 import { BarChart3, Brain, Monitor, Server } from 'lucide-vue-next'
 
-const steps = ['Pemahaman IT', 'Reframing', 'Minat', 'Rekomendasi']
+const steps = ['Pemahaman IT', 'Reframing', 'Minat']
 
 const fields = [
   {
