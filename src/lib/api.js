@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Konfigurasi axios instance untuk API backend
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api', // Menggunakan env var jika di deploy, atau localhost saat lokal
+  baseURL: import.meta.env.VITE_API_URL || 'https://brainpath-backend.vercel.app/api',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
