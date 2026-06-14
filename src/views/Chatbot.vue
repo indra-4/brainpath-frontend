@@ -52,7 +52,7 @@
               ]">
                <div
   v-if="msg.role === 'assistant'"
-  class="markdown-content"
+  class="prose prose-sm prose-blue max-w-none"
   v-html="formatMessage(msg.content)"></div>
 
 <p v-else>
@@ -156,77 +156,4 @@ const formatMessage = (text) => {
 </script>
 
 <style scoped>
-.markdown-content :deep(h1),
-.markdown-content :deep(h2),
-.markdown-content :deep(h3) {
-  font-weight: 700;
-  margin-top: 0.75rem;
-  margin-bottom: 0.5rem;
-  color: #0f172a;
-}
-
-.markdown-content :deep(h1) {
-  font-size: 1.25rem;
-}
-
-.markdown-content :deep(h2) {
-  font-size: 1.1rem;
-}
-
-.markdown-content :deep(h3) {
-  font-size: 1rem;
-}
-
-.markdown-content :deep(p) {
-  margin-bottom: 0.5rem;
-}
-
-.markdown-content :deep(ul),
-.markdown-content :deep(ol) {
-  padding-left: 1.25rem;
-  margin-bottom: 0.5rem;
-}
-
-.markdown-content :deep(ul) {
-  list-style-type: disc;
-}
-
-.markdown-content :deep(ol) {
-  list-style-type: decimal;
-}
-
-.markdown-content :deep(li) {
-  margin-bottom: 0.25rem;
-}
-
-.markdown-content :deep(strong) {
-  font-weight: 700;
-}
-
-.markdown-content :deep(code) {
-  border-radius: 0.35rem;
-  background-color: #e2e8f0;
-  padding: 0.125rem 0.3rem;
-  font-size: 0.85em;
-}
-
-.markdown-content :deep(pre) {
-  overflow-x: auto;
-  border-radius: 0.75rem;
-  background-color: #0f172a;
-  color: white;
-  padding: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.markdown-content :deep(pre code) {
-  background-color: transparent;
-  padding: 0;
-  color: inherit;
-}
-
-.markdown-content :deep(a) {
-  color: #2563eb;
-  text-decoration: underline;
-}
 </style>
