@@ -50,32 +50,32 @@
         </div>
       </BaseCard>
 
-      <!-- Sticky Mobile Tab Bar (Visible on mobile, hidden on lg screens) -->
-      <div class="sticky top-[65px] z-20 mb-5 flex rounded-2xl bg-white/95 backdrop-blur p-1.5 shadow-sm border border-slate-200 lg:hidden transition-all duration-300">
+      <!-- Floating Mobile Tab Bar (Visible on mobile, hidden on lg screens) -->
+      <div class="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-[360px] flex rounded-2xl bg-white/95 backdrop-blur p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200 lg:hidden transition-all duration-300">
         <button
           @click="activeTab = 'materi'"
           class="flex-1 rounded-xl py-2.5 text-center text-xs font-black transition-all flex items-center justify-center gap-1.5"
-          :class="activeTab === 'materi' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'"
+          :class="activeTab === 'materi' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'"
         >
           <Info class="h-4 w-4" /> Materi
         </button>
         <button
           @click="activeTab = 'video'"
           class="flex-1 rounded-xl py-2.5 text-center text-xs font-black transition-all flex items-center justify-center gap-1.5"
-          :class="activeTab === 'video' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'"
+          :class="activeTab === 'video' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'"
         >
           <Play class="h-4 w-4" /> Video
         </button>
         <button
           @click="activeTab = 'kuis'"
           class="flex-1 rounded-xl py-2.5 text-center text-xs font-black transition-all flex items-center justify-center gap-1.5"
-          :class="activeTab === 'kuis' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'"
+          :class="activeTab === 'kuis' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'"
         >
           <Award class="h-4 w-4" /> Kuis
         </button>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
+      <div class="grid gap-6 lg:grid-cols-[1.25fr_0.75fr] pb-24 lg:pb-0">
         <div class="space-y-6">
           <VideoPreview :course-id="resource.id" :title="resource.title" :source="resource.source || _extractSource(resource.externalUrl)" :url="resource.externalUrl" class="block" :class="{'hidden lg:block': activeTab !== 'video'}" />
 
